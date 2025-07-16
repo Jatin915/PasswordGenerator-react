@@ -2,11 +2,30 @@ import { useCallback, useState, useEffect} from 'react'
 
 function App() {
 
-const [Length, setLength] = useState(8);
-  const [characterAllowed, setCharacterAllowed] = useState(false);
-  const [numberAllowed, setNumberAllowed] = useState(false);
-  const [password, setPasword] = useState("");
+    const [Length, setLength] = useState(8);
+    const [characterAllowed, setCharacterAllowed] = useState(false);
+    const [numberAllowed, setNumberAllowed] = useState(false);
+    const [password, setPasword] = useState("");
 
+    const passGenerator = useCallback(() => {
+        let pass = "";
+        let str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        let num = "1234567890";
+        let Char = "@#$%^&*{}~`";
+        
+        if(numberAllowed) str += num;
+        if(characterAllowed) str += Char;
+
+        for(let i = 1; i <= Length; i++){
+          pass += str.charAt(Math.floor(Math.random() * str.length) + 1);
+        }
+        setPasword(pass);
+        
+      }, [Length, numberAllowed, characterAllowed, setPasword]);
+
+      useEffect(() => {
+        passGenerator();
+      }, [Length, numberAllowed, characterAllowed, passGenerator]);
 
   return (
     <>
@@ -14,6 +33,7 @@ const [Length, setLength] = useState(8);
         <h1 className='text-[40px] text-white text-center mb-5'>Password Generator</h1>
         
         <input type="text" className='bg-white mb-5 w-[30rem] h-12 rounded-xl pl-2 text-xl' placeholder='p@ssword' readOnly value={password}/>
+        
         <button className='ml-5 bg-blue-500 h-12 w-20 rounded-xl text-xl text-white '>Copy</button> <br />
 
         <label className='text-white mr-4'>Length: {Length}</label>
